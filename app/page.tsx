@@ -1,4 +1,5 @@
 "use client";
+import Box from "@mui/material/Box";
 import axios from "axios";
 import { useState } from "react";
 
@@ -9,7 +10,8 @@ export default function Home() {
     id: "",
     name: "",
     abilities: { ability1: "", ability2: "" },
-    weigth: 0,
+    weigth: null,
+    sprite: "",
   });
   function takeValueSearch(event) {
     setPokemonName(event.target.value);
@@ -19,7 +21,6 @@ export default function Home() {
     try {
       let url = `https://pokeapi.co/api/v2/pokemon/${pokemonName}`;
       const response = await axios.get(url);
-      const id = response.data.id;
       console.log(response.data);
       if (response.data.abilities && response.data.abilities.length >= 2) {
         setResponse({
@@ -30,6 +31,7 @@ export default function Home() {
           },
           name: response.data.name,
           weigth: response.data.weigth,
+          sprite: response.data.sprites.front_default,
         });
       }
     } catch (e) {
@@ -37,19 +39,32 @@ export default function Home() {
     }
   }
   return (
-    <div>
+    <Box
+      sx={{
+        display: "flex",
+
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        alignContent: "center",
+        height: "100vh",
+      }}
+    >
       <input placeholder="Enter Pokemon Name" onChange={takeValueSearch} />
       <button onClick={searchPokemon}>Search</button>
       {errorMessage && <p>{errorMessage}</p>}
       {response && (
-        <div>
-          <p>{response.id}</p>
-          <p>{response.abilities.ability1}</p>
-          <p>{response.abilities.ability2}</p>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            color: "#fff",
+          }}
+        >
           <p>{response.name}</p>
-          <p>{response.weigth}</p>
-        </div>
+          <img src={response.sprite} alt="" />
+        </Box>
       )}
-    </div>
+    </Box>
   );
 }
