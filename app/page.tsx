@@ -12,6 +12,7 @@ interface poke {
 }
 export default function Home() {
   const [pokemonName, setPokemonName] = useState("");
+  const [isTrue, setIsTrue] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [response, setResponse] = useState({
     id: "",
@@ -25,6 +26,10 @@ export default function Home() {
     console.log(event.target.value);
   }
   async function searchPokemon() {
+    if (!pokemonName) {
+      return alert("type something..");
+    }
+
     try {
       let url = `https://pokeapi.co/api/v2/pokemon/${pokemonName}`;
       const response = await axios.get(url);
@@ -40,8 +45,10 @@ export default function Home() {
           weigth: response.data.weight,
           sprite: response.data.sprites.front_shiny,
         });
+        setIsTrue(true);
       }
     } catch (e) {
+      setIsTrue(false);
       setErrorMessage(e.message);
     }
   }
@@ -59,8 +66,8 @@ export default function Home() {
     >
       <input placeholder="Enter Pokemon Name" onChange={takeValueSearch} />
       <button onClick={searchPokemon}>Search</button>
-      {errorMessage && <p>{errorMessage}</p>}
-      {response && (
+      {!isTrue && <p>{errorMessage}</p>}
+      {isTrue && (
         <Box
           sx={{
             display: "flex",
